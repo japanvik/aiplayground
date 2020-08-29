@@ -9,18 +9,20 @@ class ImageDiscriminator(Network):
     def __init__(self, in_channels=3, use_attention=False):
         super(ImageDiscriminator, self).__init__()
 
+        def conv(in_channels, out_channels, kernel_size, stride, padding):
+            normalization = nn.utils.spectral_norm
+            yield normalization(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding))
+            yield nn.SELU()
+
         model = []
         # Input Layer
         model += [nn.Conv2d(in_channels=in_channels, out_channels=64, kernel_size=4, stride=2, padding=1)]
         model += [nn.SELU()]
         # Convolution Layers
         SpectralNorm = nn.utils.spectral_norm
-        model += [SpectralNorm(nn.Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1))]
-        model += [nn.SELU()]
-        model += [SpectralNorm(nn.Conv2d(in_channels=128, out_channels=256, kernel_size=4, stride=2, padding=1))]
-        model += [nn.SELU()]
-        model += [SpectralNorm(nn.Conv2d(in_channels=256, out_channels=512, kernel_size=4, stride=2, padding=1))]
-        model += [nn.SELU()]
+        model += [*conv(in_channels= 64, out_channels=128, kernel_size=4, stride=2, padding=1)]
+        model += [*conv(in_channels=128, out_channels=256, kernel_size=4, stride=2, padding=1)]
+        model += [*conv(in_channels=256, out_channels=512, kernel_size=4, stride=2, padding=1)]
         # Output Layer
         model += [nn.Conv2d(in_channels=512, out_channels=1, kernel_size=16, stride=1, padding=0)]
         model += [nn.Sigmoid()]
