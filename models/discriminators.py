@@ -41,7 +41,7 @@ class ImageDiscriminator(Network):
         return x.squeeze()
 
 
-class PatchGANDiscrimnator(Network):
+class PatchGANDiscriminator(Network):
 
     def __init__(self, in_channels=3):
         super(PatchGANDiscrimnator, self).__init__()
