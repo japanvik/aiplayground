@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from .network import Network
-from .attention import SelfAttention
+from .attention import SelfAttention2D
 
 class ImageDiscriminator(Network):
     """ A 256 x 256 image discriminator using SpectralNormalization, SELU and an Attention block
@@ -30,7 +30,7 @@ class ImageDiscriminator(Network):
         model += [nn.Sigmoid()]
 
         if use_attention:
-            model.insert(4, SelfAttention(128))
+            model.insert(4, SelfAttention2D(128))
 
         # Build the model
         self.model = nn.Sequential(*model)
@@ -44,7 +44,7 @@ class ImageDiscriminator(Network):
 class PatchGANDiscriminator(Network):
 
     def __init__(self, in_channels=3):
-        super(PatchGANDiscrimnator, self).__init__()
+        super(PatchGANDiscriminator, self).__init__()
 
         def conv(in_channels, out_channels, kernel_size, stride, padding):
             normalization = nn.utils.spectral_norm
