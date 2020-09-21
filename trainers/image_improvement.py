@@ -10,9 +10,10 @@ from losses.vgg import PerceptualLoss
 
 class ImageImprovementTrainer(object):
     def __init__(self, model_name, log_dir='logs', epoch=0, use_latest=False,
-            lambda_pixel=100, lr=0.0002, beta=0.5, in_channels=3):
+            lambda_pixel=50, lambda_percept=100, lr=0.0002, beta=0.5, in_channels=3):
         self.epoch=epoch
         self.lambda_pixel = lambda_pixel
+        self.lambda_percept = lambda_percept
         self.log_dir = log_dir
         # Create checkpoint paths
         self.model_name = model_name
@@ -59,7 +60,7 @@ class ImageImprovementTrainer(object):
         # Perceptual loss
         loss_perception = self.perceptual_loss(generated, target.cuda())
 
-        loss_g = self.lambda_pixel * loss_pixel + loss_perception
+        loss_g = self.lambda_pixel * loss_pixel + self.lambda_percept * loss_perception
         #loss_g = self.lambda_pixel * loss_perception
 
         loss_g.backward()
