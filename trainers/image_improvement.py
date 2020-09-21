@@ -10,9 +10,8 @@ from losses.vgg import PerceptualLoss
 
 class ImageImprovementTrainer(object):
     def __init__(self, model_name, log_dir='logs', epoch=0, use_latest=False,
-            lambda_pixel=50, lambda_percept=100, lr=0.0002, beta=0.5, in_channels=3):
+            lambda_percept=1, lr=0.0002, beta=0.5, in_channels=3):
         self.epoch=epoch
-        self.lambda_pixel = lambda_pixel
         self.lambda_percept = lambda_percept
         self.log_dir = log_dir
         # Create checkpoint paths
@@ -23,12 +22,10 @@ class ImageImprovementTrainer(object):
         self.netG = Generator(in_channels=in_channels)
 
         # loss functions
-        self.pixelwise_loss = torch.nn.L1Loss()
         self.perceptual_loss = PerceptualLoss()
 
         # put the models in the GPU
         self.netG.cuda()
-        self.pixelwise_loss.cuda()
         self.perceptual_loss.cuda()
 
         # Initialize weights
@@ -54,14 +51,11 @@ class ImageImprovementTrainer(object):
         # Pass the source image to the Generator
         generated = self.netG(source.cuda())
 
-        # Pixelwise loss
-        loss_pixel = self.pixelwise_loss(generated, target.cuda())
 
         # Perceptual loss
         loss_perception = self.perceptual_loss(generated, target.cuda())
 
-        loss_g = self.lambda_pixel * loss_pixel + self.lambda_percept * loss_perception
-        #loss_g = self.lambda_pixel * loss_perception
+        loss_g = self.lambda_percept * loss_perception
 
         loss_g.backward()
         self.optimizer_G.step()
@@ -69,7 +63,6 @@ class ImageImprovementTrainer(object):
         # Values to keep track of
         ##########################################
         ret_loss = [('lossG', loss_g.mean().item()),
-                    ('pixel', loss_pixel.mean().item()),
                     ('percept', loss_perception.mean().item()),
                     ]
         return ret_loss, generated.detach()
