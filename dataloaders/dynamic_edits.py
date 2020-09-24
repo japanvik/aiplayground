@@ -15,7 +15,7 @@ class DynamicEdits(ImageFolder):
         path, klass = self.samples[index]
         try:
             sample = self.loader(path).convert('RGB')
-        except ValueError:
+        except:
             raise ValueError('Error loading %s' % (path))
 
         if self.transform:

@@ -90,4 +90,3 @@ class Mozaic(object):
     def __repr__(self):
         return self.__class__.__name__ + f'(area_ratio={self.area_ratio}, width={self.min_width}-{self.max_width}, strength={self.min_strength}-{self.max_strength})'
 
-
