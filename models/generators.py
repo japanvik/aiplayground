@@ -8,7 +8,7 @@ class CycleGANGenerator(Network):
         Takes 3 x 256 x 256 image tensor and outputs the same
     """
 
-    def __init__(self, in_channels=3, use_attention=True, residual_layers=6, use_dropout=True):
+    def __init__(self, in_channels=3, out_channels=3, use_attention=True, residual_layers=6, use_dropout=True):
         super(CycleGANGenerator, self).__init__()
 
         def conv(in_channels, out_channels, kernel_size, stride, padding):
@@ -41,7 +41,7 @@ class CycleGANGenerator(Network):
         model += [nn.LeakyReLU()]
         #Output layer
         model += [nn.ReflectionPad2d(3)]
-        model += [nn.Conv2d(in_channels=64, out_channels=in_channels, kernel_size=7, stride=1)]
+        model += [nn.Conv2d(in_channels=64, out_channels=out_channels, kernel_size=7, stride=1)]
         model += [nn.Tanh()]
 
         # Build the model
