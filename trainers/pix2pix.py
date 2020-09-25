@@ -36,7 +36,7 @@ class Pix2PixTrainer(object):
         self.perceptual_loss.cuda()
 
         # Initialize weights
-        if self.epoch == 0 or not use_latest:
+        if not use_latest and self.epoch == 0:
             self.netG.apply(Network.init_weights)
             self.netD.apply(Network.init_weights)
         else:
