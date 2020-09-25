@@ -65,7 +65,7 @@ class ImageImprovementTrainer(object):
         ret_loss = [('lossG', loss_g.mean().item()),
                     ('percept', loss_perception.mean().item()),
                     ]
-        return ret_loss, generated.detach()
+        return ret_loss, [generated.detach()]
 
 
     def make_log_dir(self):
